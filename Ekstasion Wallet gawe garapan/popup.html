@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Wallet</title>
+  <style>
+    body { width: 380px; padding: 10px; font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; margin: 0; }
+    h3 { margin-top: 0; color: #333; text-align: center; }
+    .tabs { display: flex; margin-bottom: 10px; border-bottom: 2px solid #ddd; cursor: pointer; font-size: 13px; }
+    .tab { flex: 1; text-align: center; padding: 8px 4px; font-weight: bold; color: #666; }
+    .tab.active { color: #007bff; border-bottom: 2px solid #007bff; margin-bottom: -2px; }
+    .content { display: none; }
+    .content.active { display: block; }
+    .card { background: white; padding: 12px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 10px; }
+    .address { font-family: monospace; font-size: 13px; background: #e9ecef; padding: 8px; border-radius: 5px; word-break: break-all; margin: 5px 0; }
+    .nav-container { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+    button { cursor: pointer; border-radius: 5px; border: none; font-weight: bold; }
+    .btn-nav { background: #007bff; color: white; padding: 6px 12px; }
+    .btn-action { background: #28a745; color: white; padding: 10px; width: 100%; margin-top: 5px; }
+    input, select, textarea { width: 100%; padding: 8px; margin-top: 5px; margin-bottom: 5px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 5px; font-size: 12px;}
+    .label-title { font-size: 12px; font-weight: bold; color: #444; margin-top: 5px; display: block;}
+    .scan-list { max-height: 100px; overflow-y: auto; text-align: left; font-size: 11px; margin-top: 10px; background: #f8f9fa; padding: 5px; border-radius: 5px; border: 1px solid #ddd; }
+    .scan-item { border-bottom: 1px solid #eee; padding: 3px 0; display: flex; justify-content: space-between; }
+    .flex-row { display: flex; gap: 10px; }
+    .flex-row > div { flex: 1; }
+  </style>
+</head>
+<body>
+  <h3>Wallet</h3>
+  <div class="tabs">
+    <div class="tab active" id="tabHome">🏠 Home</div>
+    <div class="tab" id="tabNto1">🧲 Banyak ke 1</div>
+    <div class="tab" id="tab1toN">🚀 1 ke Banyak</div>
+  </div>
+  
+  <div id="contentHome" class="content active">
+    <div class="card">
+      <div style="font-size: 12px; color: gray;">Dompet Aktif:</div>
+      <div class="address" id="walletAddress">Belum ada dompet</div>
+      
+      <label class="label-title" style="margin-top: 10px;">Jaringan Aktif (Global)</label>
+      <select id="activeNetworkHome">
+        <option value="0x38">BSC (BNB)</option>
+        <option value="0x1">Ethereum</option>
+        <option value="0x89">Polygon (MATIC)</option>
+        <option value="0xa4b1">Arbitrum</option>
+        <option value="0x2105">Base</option>
+        <option value="0xa86a">Avalanche</option>
+        <option value="0xcc">opBNB</option>
+        <option value="0x659">Gravity Alpha</option>
+      </select>
+
+      <div class="nav-container">
+        <button class="btn-nav" id="prevBtn">&lt; Prev</button>
+        <span id="walletCounter" style="font-weight:bold; font-size:14px;">0/0</span>
+        <button class="btn-nav" id="nextBtn">Next &gt;</button>
+      </div>
+    </div>
+    
+    <div class="card">
+      <textarea id="walletInput" rows="3" placeholder="Paste Private Key massal..."></textarea>
+      <button class="btn-action" id="addWalletBtn">➕ Tambah Dompet Massal</button>
+      
+      <div style="border-top: 1px solid #eee; margin-top: 15px; padding-top: 10px;">
+        <label class="label-title">Buat Dompet Baru</label>
+        <div class="flex-row">
+          <div>
+            <input type="number" id="genCount" placeholder="Jumlah" value="1" min="1">
+          </div>
+          <div>
+            <select id="genType">
+              <option value="private">Private Key</option>
+              <option value="phrase">Seed Phrase</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn-action" id="generateBtn" style="background: #6f42c1;">⚙️ Generate Wallet</button>
+        
+        <div id="genResultArea" style="display: none; margin-top: 10px;">
+          <textarea id="genResult" rows="3" readonly style="background: #f8f9fa; font-family: monospace;"></textarea>
+          <div class="flex-row">
+            <button class="btn-action" id="copyGenBtn" style="background: #17a2b8; padding: 6px;">📋 Salin</button>
+            <button class="btn-action" id="addGenBtn" style="background: #28a745; padding: 6px;">📥 Masukkan ke Wallet</button>
+          </div>
+        </div>
+      </div>
+
+      <button id="clearBtn" style="background: transparent; color: #dc3545; border: none; font-size: 13px; font-weight: bold; cursor: pointer; text-decoration: underline; margin-top: 15px; width: 100%; padding-top: 10px; border-top: 1px solid #eee;">🗑️ Hapus Semua Data Dompet</button>
+    </div>
+  </div>
+
+  <div id="contentNto1" class="content">
+    <div class="card">
+      <label class="label-title">Jaringan Target</label>
+      <select id="networkSelectNto1">
+        <option value="0x89">Polygon (MATIC)</option>
+        <option value="0x659">Gravity Alpha</option>
+        <option value="0x38">BSC (BNB)</option>
+        <option value="0x1">Ethereum</option>
+        <option value="0xa4b1">Arbitrum</option>
+        <option value="0x2105">Base</option>
+        <option value="0xa86a">Avalanche</option>
+        <option value="0xcc">opBNB</option>
+      </select>
+      <label class="label-title">Pilih Kripto</label>
+      <select id="tokenTypeNto1">
+        <option value="native">Native Coin</option>
+        <option value="token">Custom Token (ERC-20)</option>
+      </select>
+      <input type="text" id="tokenContractNto1" placeholder="Smart Contract Token..." style="display:none;">
+      <button class="btn-action" id="scanBtn" style="background: #ff9800;">🔍 Scan Semua Dompet</button>
+      <div id="scanResult" style="margin-top: 10px; font-size: 12px; font-weight: bold;"></div>
+      <div id="sendArea" style="display:none; border-top: 1px solid #eee; padding-top: 10px; margin-top: 10px;">
+        <label class="label-title">Alamat Penerima</label>
+        <input type="text" id="targetAddressNto1" placeholder="0x...">
+        <div class="flex-row">
+            <div>
+                <label class="label-title">Jumlah Kirim</label>
+                <select id="amountTypeNto1">
+                    <option value="max">Maks</option>
+                    <option value="custom">Jumlah Tertentu</option>
+                </select>
+            </div>
+            <div>
+                <label class="label-title">Kecepatan Gas</label>
+                <select id="gasSpeedNto1">
+                    <option value="slow">Lambat</option>
+                    <option value="normal" selected>Normal</option>
+                    <option value="fast">Cepat</option>
+                </select>
+            </div>
+        </div>
+        <input type="number" id="customAmountNto1" placeholder="Contoh: 0.1" style="display:none;">
+        <button class="btn-action" id="executeNto1Btn">🚀 Eksekusi Kirim Massal</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content1toN" class="content">
+    <div class="card">
+      <div style="font-size: 11px; color: gray; margin-bottom:5px;">Akan dikirim dari: <b id="senderAddress1toN" style="color:black;">Belum ada</b></div>
+      <label class="label-title">Jaringan & Kripto</label>
+      <div class="flex-row">
+        <select id="networkSelect1toN">
+            <option value="0x89">Polygon (MATIC)</option>
+            <option value="0x659">Gravity Alpha</option>
+            <option value="0x38">BSC (BNB)</option>
+            <option value="0x1">Ethereum</option>
+            <option value="0xa4b1">Arbitrum</option>
+            <option value="0x2105">Base</option>
+            <option value="0xa86a">Avalanche</option>
+            <option value="0xcc">opBNB</option>
+        </select>
+        <select id="tokenType1toN">
+            <option value="native">Native Coin</option>
+            <option value="token">Token</option>
+        </select>
+      </div>
+      <input type="text" id="tokenContract1toN" placeholder="Smart Contract Token..." style="display:none;">
+      <label class="label-title">Daftar Penerima (1 alamat per baris)</label>
+      <textarea id="targetList1toN" rows="4" placeholder="0xAbc...\n0xDef..."></textarea>
+      <div class="flex-row">
+        <div>
+            <label class="label-title">Jumlah (Per Alamat)</label>
+            <select id="amountType1toN">
+                <option value="custom" selected>Jumlah yang ditentukan</option>
+                <option value="max">Total saldo</option>
+            </select>
+        </div>
+        <div>
+            <label class="label-title">Kecepatan Gas</label>
+            <select id="gasSpeed1toN">
+                <option value="slow">Lambat</option>
+                <option value="normal" selected>Normal</option>
+                <option value="fast">Cepat</option>
+            </select>
+        </div>
+      </div>
+      <input type="number" id="customAmount1toN" placeholder="Kirim berapa per dompet? (Misal 0.1)">
+      <button class="btn-action" id="execute1toNBtn" style="background: #17a2b8;">🚀 Mulai Sebar (Disperse)</button>
+      <div id="result1toN" style="font-size: 12px; margin-top: 10px; font-weight: bold;"></div>
+    </div>
+  </div>
+
+  <script src="ethers.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
