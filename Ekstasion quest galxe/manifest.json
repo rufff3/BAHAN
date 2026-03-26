@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "AUTO QUEST GALXE",
+  "version": "1.0",
+  "description": "Bot Auto Quest Galxe dengan fitur Auto Click, Auto Claim, dan Auto Next Wallet.",
+  "icons": {
+    "16": "icon.png",
+    "32": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
+  "permissions": [
+    "storage",
+    "tabs",
+    "activeTab",
+    "scripting"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "icon.png"
+  },
+  "background": {
+    "service_worker": "background_bot.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content_bot.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["injeksi.js"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
