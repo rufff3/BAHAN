@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "name": "Twitter Checker",
+  "version": "1.0",
+  "description": "Cek status akun Twitter dengan cepat dan otomatis.",
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "host_permissions": [
+    "https://api.fxtwitter.com/*"
+  ]
+}
